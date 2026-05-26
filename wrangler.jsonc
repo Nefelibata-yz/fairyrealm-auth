@@ -18,7 +18,7 @@
     {
       "binding": "DB",
       "database_name": "fairyrealm-auth-db",
-      "database_id": "REPLACE_AFTER_WRANGLER_D1_CREATE"
+      "database_id": "fd3f2fe8-0223-44e3-8830-9239d95a74f6"
     }
   ],
   "images": {
