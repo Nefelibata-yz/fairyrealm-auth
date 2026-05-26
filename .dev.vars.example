@@ -1,0 +1,6 @@
+NEXTJS_ENV=development
+AUTH_URL=https://auth.fairyrealm.xyz
+AUTH_COOKIE_DOMAIN=.fairyrealm.xyz
+AUTH_SECRET=generate-with-openssl-rand-base64-32
+# GITHUB_ID=
+# GITHUB_SECRET=
