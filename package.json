@@ -14,7 +14,7 @@
     "db:migrate:remote": "wrangler d1 migrations apply fairyrealm-auth-db --remote"
   },
   "dependencies": {
-    "@fairyrealm/shared": "*",
+    "@fairyrealm/shared": "file:./packages/shared",
     "@auth/d1-adapter": "^1.11.2",
     "bcryptjs": "^3.0.3",
     "next": "^15.5.18",
