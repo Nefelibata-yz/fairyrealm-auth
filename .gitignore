@@ -42,6 +42,7 @@ next-env.d.ts
 
 # opennext
 .open-next
+.wrangler/
 
 # secrets
 .dev.vars
