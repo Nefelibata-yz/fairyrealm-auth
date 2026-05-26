@@ -1,18 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
-import { compare } from "bcryptjs";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
-
-type DbUser = {
-  id: string;
-  email: string;
-  name: string | null;
-  password_hash: string;
-};
-
-const cookieDomain =
-  process.env.AUTH_COOKIE_DOMAIN ?? ".fairyrealm.xyz";
+import { verifyPassword } from "@/lib/auth-user";
+import { cookieDomain, sessionCookieName } from "@fairyrealm/shared";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -26,31 +16,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
-
-        const { env } = await getCloudflareContext({ async: true });
-        const row = await env.DB.prepare(
-          "SELECT id, email, name, password_hash FROM users WHERE email = ?",
-        )
-          .bind(String(credentials.email).toLowerCase())
-          .first<DbUser>();
-
-        if (!row) {
-          return null;
-        }
-
-        const valid = await compare(
+        return verifyPassword(
+          String(credentials.email),
           String(credentials.password),
-          row.password_hash,
         );
-        if (!valid) {
-          return null;
-        }
-
-        return {
-          id: row.id,
-          email: row.email,
-          name: row.name ?? row.email,
-        };
       },
     }),
     ...(process.env.GITHUB_ID && process.env.GITHUB_SECRET
@@ -68,10 +37,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   cookies: {
     sessionToken: {
-      name:
-        process.env.NODE_ENV === "production"
-          ? "__Secure-authjs.session-token"
-          : "authjs.session-token",
+      name: sessionCookieName,
       options: {
         httpOnly: true,
         sameSite: "lax",
